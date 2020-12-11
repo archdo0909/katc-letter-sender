@@ -66,7 +66,6 @@ class LetterClient:
     def send_letter(self, name, title, content):
         chkedContent = self._splitContent(content)
 
-
         for cont in chkedContent:
             #print("cont-------------" + cont + "\n")
             self._send(name, title, cont)
@@ -139,8 +138,6 @@ if __name__ == '__main__':
 
     client = LetterClient()
     client.login(LOGIN_ID, LOGIN_PWD)
-    
-
     # 그냥 커스텀 텍스트 써서 보낼 때
     title = "Holy"
     contents = "YEAH"
@@ -151,7 +148,7 @@ if __name__ == '__main__':
 
     nc = NewsCrawler.NaverNews()
     length = nc.getNewslist(nc.OfficeId.JTBC)
-    for l in range(length):
+    for l in range(20):
         title, contents = nc.getNewsContents(l)
         print(title)
         client.send_letter(name='김한준', title=title, content=contents)
