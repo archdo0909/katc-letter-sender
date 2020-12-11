@@ -3,6 +3,7 @@ import json
 import requests
 
 from bs4 import BeautifulSoup
+from NewsCrawler import NewsCrawler
 
 class LetterClient:
 
@@ -67,7 +68,7 @@ class LetterClient:
 
 
         for cont in chkedContent:
-            print("cont-------------" + cont + "\n")
+            #print("cont-------------" + cont + "\n")
             self._send(name, title, cont)
 
     def _send(self, name, title, content):
@@ -104,12 +105,12 @@ class LetterClient:
         for i in range(0, len(splited)):
             if slen + len(splited[i]) > 1450:
                 bodies.append('\n'.join(splited[:i - 1]) + '\n' +splited[i][:1450 - slen])
-                bodies += self.splitContent(splited[i][1450-slen:] + '\n' + '\n'.join(splited[i + 1:]))
+                bodies += self._splitContent(splited[i][1450-slen:] + '\n' + '\n'.join(splited[i + 1:]))
                 return bodies
             slen += len(splited[i])
             if i == 24:
                 bodies.append("\n".join(splited[:i]))
-                bodies += self.splitContent('\n'.join(splited[i + 1:]))
+                bodies += self._splitContent('\n'.join(splited[i + 1:]))
                 return bodies
         bodies.append(content)
         return bodies
@@ -130,6 +131,7 @@ class LetterClient:
         mgr_seq = map(lambda x: int(x[1:-1]), codes)
         return mgr_seq
 
+
 if __name__ == '__main__':
 
     from user_config import LOGIN_ID
@@ -137,4 +139,19 @@ if __name__ == '__main__':
 
     client = LetterClient()
     client.login(LOGIN_ID, LOGIN_PWD)
-    client.send_letter(name='김한준', title='크롤러 테스트 중', content='잘 가나유?')
+    
+
+    # 그냥 커스텀 텍스트 써서 보낼 때
+    title = "Holy"
+    contents = "YEAH"
+    client.send_letter(name='김한준', title=title, content=contents)
+
+    # 뉴스 스크랩
+    # 신문사 선택 가능 (JTBC, YONHAP, CHOSUN)
+
+    nc = NewsCrawler.NaverNews()
+    length = nc.getNewslist(nc.OfficeId.JTBC)
+    for l in range(length):
+        title, contents = nc.getNewsContents(l)
+        print(title)
+        client.send_letter(name='김한준', title=title, content=contents)
