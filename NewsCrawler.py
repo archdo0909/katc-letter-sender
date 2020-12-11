@@ -54,8 +54,10 @@ class NewsCrawler:
 
             res = BeautifulSoup(contents_page.content, "html.parser")
 
-            contents_body = res.select('#articleBodyContents')[0].get_text().replace('\n', " ")
-            contents_body = contents_body.replace('// flash 오류를 우회하기 위한 함수 추가 function _flash_removeCallback() {}', "")
+            contents_body = res.select('#articleBodyContents')[0].get_text()
+            contents_body = contents_body.replace('flash 오류를 우회하기 위한 함수 추가', '')
+            contents_body = contents_body.replace('function _flash_removeCallback() {}', '')
+            contents_body = contents_body.replace('\n', '\n')
             
             return title, contents_body
 
